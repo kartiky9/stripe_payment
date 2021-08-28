@@ -4,6 +4,10 @@ from .utils import get_current_year, get_current_month
 
 
 class RequestSerializer(serializers.Serializer):
+    """
+    Request Serializer as per required by Stripe API. Validations used are as per required for Stripe API
+    """
+
     amount = serializers.IntegerField(min_value=50, max_value=99999999)
     currency = serializers.CharField(max_length=3)
     description = serializers.CharField(
