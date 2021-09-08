@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.reverse import reverse
 from django.urls import resolve
 
-from .services.stripe import StripeServiceFactory, _MockStripeService
+from .services import MockPaymentService, PaymentServiceFactory
 
 # Create your tests here.
 
@@ -42,10 +42,10 @@ class ChargesTest(APITestCase):
                 'amount_refunded': 0,
             }
         ]
-        _MockStripeService.set_data(cls.data)
+        MockPaymentService.set_data(cls.data)
 
     def setUp(self):
-        StripeServiceFactory.mock = True
+        PaymentServiceFactory.mock = True
 
     def test_create_charge_success(self):
         url = reverse('payments:create-charge')

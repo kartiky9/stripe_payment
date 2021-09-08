@@ -5,14 +5,14 @@ from rest_framework import status
 
 
 from .serializers import RequestSerializer
-from .services.stripe import StripeServiceFactory
+from .services import PaymentServiceFactory, Type
 
 
 @api_view(['POST'])
 def create_charge(request):
     serializer = RequestSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    StripeService = StripeServiceFactory.get_service()
+    StripeService = PaymentServiceFactory.get_service(Type.STRIPE_SERVICE)
     try:
         token_id = StripeService.create_token(
             serializer.data['card_number'],
@@ -33,7 +33,7 @@ def create_charge(request):
 
 @api_view(['POST'])
 def capture_charge(request, chargeId):
-    StripeService = StripeServiceFactory.get_service()
+    StripeService = PaymentServiceFactory.get_service(Type.STRIPE_SERVICE)
     try:
         charge = StripeService.capture_charge(chargeId)
     except Exception as e:
@@ -43,7 +43,7 @@ def capture_charge(request, chargeId):
 
 @api_view(['POST'])
 def create_refund(request, chargeId):
-    StripeService = StripeServiceFactory.get_service()
+    StripeService = PaymentServiceFactory.get_service(Type.STRIPE_SERVICE)
     try:
         refund = StripeService.create_refund(chargeId)
     except Exception as e:
@@ -53,7 +53,7 @@ def create_refund(request, chargeId):
 
 @api_view(['GET'])
 def get_charges(request):
-    StripeService = StripeServiceFactory.get_service()
+    StripeService = PaymentServiceFactory.get_service(Type.STRIPE_SERVICE)
     try:
         charges = StripeService.list_charges()
     except Exception as e:
